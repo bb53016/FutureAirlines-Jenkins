@@ -6,7 +6,8 @@ node ('deployer') {
 
     stage ('GitHub Checkout') {
       git_checkout()
-	    
+       }
+	  
     stage('Test Code') {
         steps {
            echo 'Testing Code...'
