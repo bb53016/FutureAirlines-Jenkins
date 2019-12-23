@@ -18,7 +18,7 @@ node ('master') {
        }
 
        stage ('Compute Stack Plan') {
-         env_tfvars = "../../infras-as-code/terraform/ec2/config.tfvars"
+         env_tfvars = "infras-as-code/terraform/ec2/config.tfvars"
 	 sh "terraform plan -no-color -out=tfplan -input=false -var-file=${env_tfvars}"
        }
 
@@ -30,8 +30,15 @@ node ('master') {
 	  
     stage('Test Code') {
         steps {
-           echo 'Testing Code...'
-            }
+  		environmentVariables {
+    		env('WEBSITE', websie)
+    		env('TIMEOUT', 5)
+    		env('ATTEMPTS', 5)
+  		}
+
+  		//Run a shell script from the workspace
+  		shell(readFileFromWorkspace('infras-as-code/terraform/ec2/check_status_code.sh'))
+		}
         }
      }
 
