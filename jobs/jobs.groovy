@@ -1,12 +1,35 @@
 
 def gitCreds           = '<GitHub Credentail encoded into Jenkins>'
-def gitBuildRepo       = '<URL to GitHub Repository>' 
+def Build-gitBuildRepo       = '<URL to GitHub Repository>' 
+def Build-gitBuildRepo       = '<URL to GitHub Repository>' 
 
-pipelineJob("Developer-CI-Pipeline") {
+pipelineJob("Build Job") {
   description('')
   [$class: 'BuildBlockerProperty',
      blockLevel: 'GLOBAL',
-     blockingJobs: 'Deployment-Pipeline',
+     blockingJobs: 'Build Job',
+     scanQueueFor: 'buildable',
+     useBuildBlocker: true
+  ]
+  parameters {
+    choiceParam('gitCreds', [gitCreds], '')
+    choiceParam('gitUrl', [gitBuildRepo], '')
+  }
+  definition {
+    cps {
+      script(readFileFromWorkspace('pipelines/build.groovy'))
+      sandbox()
+    }
+  }
+  logRotator(30,100)
+}
+
+
+pipelineJob("Test Job") {
+  description('')
+  [$class: 'BuildBlockerProperty',
+     blockLevel: 'GLOBAL',
+     blockingJobs: 'Test Job',
      scanQueueFor: 'buildable',
      useBuildBlocker: true
   ]
@@ -19,7 +42,7 @@ pipelineJob("Developer-CI-Pipeline") {
   }
   definition {
     cps {
-      script(readFileFromWorkspace('pipelines/pipelines.groovy'))
+      script(readFileFromWorkspace('pipelines/test.groovy'))
       sandbox()
     }
   }
