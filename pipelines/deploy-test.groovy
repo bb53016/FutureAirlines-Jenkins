@@ -1,4 +1,4 @@
-
+def hostname
 
 node ('master') {
   writeFile(file: "git-askpass-${BUILD_TAG}", text: "#!/bin/bash\ncase \"\$1\" in\nUsername*) echo \"\${STASH_USERNAME}\" ;;\nPassword*) echo \"\${STASH_PASSWORD}\" ;;\nesac")
