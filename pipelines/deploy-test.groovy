@@ -25,13 +25,14 @@ node ('master') {
        if (terraformApplyPlan == 'true') {
          stage ('Compute Stack Apply') {
            sh "terraform apply -input=false -no-color tfplan"
+           hostname = sh (script: "terraform output hostname", returnStdout: true).trim()
          }
        }
 	  
     stage('Test Code') {
         steps {
   		environmentVariables {
-    		env('WEBSITE', websie)
+    		env('WEBSITE', hostname)
     		env('TIMEOUT', 5)
     		env('ATTEMPTS', 5)
   		}
